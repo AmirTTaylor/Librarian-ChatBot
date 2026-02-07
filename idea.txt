@@ -1,0 +1,19 @@
+Idea:
+    - Create an AI chatbot that recommends books to the user
+    - User can ask for recommendations based on genre
+    - User can ask for recommendations based on books
+    - User can ask for recommendations based on author
+    - User can save a database of the books the user has read that the chatbot can pull from to make recommendations based on
+
+Progress:
+    01/30/26
+    - Coded the chatbot and connected a small vector store
+    01/31/26
+    - Test to see if bot can recommend based on previous read books
+        - Is suggesting based on recent reads but not from the database of books provided
+        - Ask ChatGpt why, it says the prompt isnt strict enough
+    - Ask chatgpt to create a large csv file full of books, Structure: title,description,genre,author,themes,mood
+    02/07/26
+    - turned chatbot into function call 
+    - added comments
+    - Creating a terminal menu with option to talk to chatbot or save previously read books
