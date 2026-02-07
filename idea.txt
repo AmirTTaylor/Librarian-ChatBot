@@ -14,6 +14,7 @@ Progress:
         - Ask ChatGpt why, it says the prompt isnt strict enough
     - Ask chatgpt to create a large csv file full of books, Structure: title,description,genre,author,themes,mood
     02/07/26
-    - turned chatbot into function call 
-    - added comments
+    - Turned chatbot into function call 
+    - Added comments
     - Creating a terminal menu with option to talk to chatbot or save previously read books
+    - Working on reading and writing from a file that stores books the user has read

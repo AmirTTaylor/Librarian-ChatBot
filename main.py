@@ -1,21 +1,78 @@
 from langchain_ollama.llms import OllamaLLM
 from langchain_core.prompts import ChatPromptTemplate
 from vector import retriever
+import sys
 def homepage():
     #Print Homepage
     print("_________________________________________________________\n"+"Welcome to your personal libary!!\n")
     
     print("""
-          1.Your Books
-          2.AI Librarian(Book Suggestions)""")
+          1.My Library
+          2.AI Librarian(Book Recommendations)""")
+    
     #Take user input for app navigation
     navigate = input("Enter 1 or 2 to navigate: ")
+    
     #Ensure user inputs 1 or 2
     while(navigate != 1 or navigate != 2):
         navigate = input("Please make sure your input is a 1 or 2: ")
-        
-        
-def chatBot():
+    
+    match navigate:
+        case 1:
+            mylibrary()
+        case 2:
+            chatbot()
+
+def mylibrary():
+    #Menu
+    print("""_____________________________________________\n
+          1.Finished Books
+          2.Add a Book
+          3.To-Be-Read (TBR) List""")
+    
+    #Navigate menu
+    navigate = input("Enter 1 or 2 to navigate: ")
+    while(navigate != 1 or navigate != 2 or navigate != 3):
+        navigate = input("Please make sure your input is a 1, 2, or 3: ")
+    
+    match navigate:
+        case 1:
+            finishedbooks()
+        case 2:
+            addbook()
+            pass
+        case 3:
+            pass
+
+def finishedbooks():
+    print(""""_____________________________________________________
+          Here is a list of your finished books:\n""")
+    
+    #Access or create a text file to store the users previously read books
+    try:
+        with open("yourbooks.txt","a+") as yourbooks:
+            content = yourbooks.read()
+            print(content)
+    #Handle errors
+    except FileNotFoundError:
+        print("Soemthing went wrong. Error 1")   
+        sys.exit()
+
+def addbook():
+    print("""_____________________________________________\n
+          Congrats on finishing a book!!!!\n
+          Please porvide the following info about the book.
+          """)
+    #Access or create a text file to store the users previously read books
+    try:
+        with open("yourbooks.txt","a+") as yourbooks:
+            
+    #Handle errors
+    except FileNotFoundError:
+        print("Soemthing went wrong. Error 1")   
+        sys.exit()
+
+def chatbot():
     model = OllamaLLM(model = "phi3:mini") # The chatbot model
     
     #This is the template of instructions for the chatbot
