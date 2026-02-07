@@ -2,46 +2,42 @@ from langchain_ollama.llms import OllamaLLM
 from langchain_core.prompts import ChatPromptTemplate
 from vector import retriever
 import sys
+#Functions
 def homepage():
     #Print Homepage
     print("_________________________________________________________\n"+"Welcome to your personal libary!!\n")
     
-    print("""
-          1.My Library
-          2.AI Librarian(Book Recommendations)""")
+    print("1.My Library\n"+"2.AI Librarian(Book Recommendations)")
     
     #Take user input for app navigation
     navigate = input("Enter 1 or 2 to navigate: ")
     
     #Ensure user inputs 1 or 2
-    while(navigate != 1 or navigate != 2):
+    while navigate not in ("1","2"):
         navigate = input("Please make sure your input is a 1 or 2: ")
     
     match navigate:
-        case 1:
+        case "1":
             mylibrary()
-        case 2:
+        case "2":
             chatbot()
 
 def mylibrary():
     #Menu
-    print("""_____________________________________________\n
-          1.Finished Books
-          2.Add a Book
-          3.To-Be-Read (TBR) List""")
-    
+    print("_____________________________________________\n"+"1.Finished Books\n"+"2.Add a Book\n"+"3.To-Be-Read (TBR) List")
+
     #Navigate menu
     navigate = input("Enter 1 or 2 to navigate: ")
-    while(navigate != 1 or navigate != 2 or navigate != 3):
+    while navigate not in ("1","2","3"):
         navigate = input("Please make sure your input is a 1, 2, or 3: ")
     
     match navigate:
-        case 1:
+        case "1":
             finishedbooks()
-        case 2:
+        case "2":
             addbook()
             pass
-        case 3:
+        case "3":
             pass
 
 def finishedbooks():
@@ -50,7 +46,7 @@ def finishedbooks():
     
     #Access or create a text file to store the users previously read books
     try:
-        with open("yourbooks.txt","a+") as yourbooks:
+        with open("yourbooks.txt","r") as yourbooks:
             content = yourbooks.read()
             print(content)
     #Handle errors
@@ -59,14 +55,23 @@ def finishedbooks():
         sys.exit()
 
 def addbook():
-    print("""_____________________________________________\n
-          Congrats on finishing a book!!!!\n
-          Please porvide the following info about the book.
-          """)
+    print("_____________________________________________\n"+"Congrats on finishing a book!!!!\n"+"Please porvide the following info about the book.")
+    # Book info
+    title = input("Book Title: ")
+    author = input("Author :")
+    review = input("Rating 1-5: ")
+    notes = input("Notes: ")
+    info = [
+        f"Title: {title}\n",
+        f"Author: {author}\n",
+        f"Rating: {review}\n",
+        f"Notes: {notes}\n",
+        "-" * 32 + "\n"
+    ]
     #Access or create a text file to store the users previously read books
     try:
         with open("yourbooks.txt","a+") as yourbooks:
-            
+            yourbooks.writelines(info)
     #Handle errors
     except FileNotFoundError:
         print("Soemthing went wrong. Error 1")   
@@ -79,26 +84,36 @@ def chatbot():
     template = """
     You are an expert librarian and book recommendation assistant.
 
-    You are given a library of books.
-    You must ONLY recommend books that appear in the provided library.
-    Do NOT invent or mention books that are not listed.
-    If no suitable recommendations exist, clearly say so.
+    You are given:
+    1. A catalog of available books you MAY recommend from.
+    2. A history of books the user has already read.
+
+    STRICT RULES:
+    - You must ONLY recommend books from the catalog.
+    - DO NOT recommend books the user has already read.
+    - Use the user's reading history ONLY to infer preferences.
+    - If no suitable recommendations exist, clearly say so.
 
     You will recommend up to 3 books.
 
-    Library (titles, genres, and descriptions):
+    User reading history (for preference inference only):
+    {history}
+
+    Available catalog (recommend ONLY from this list):
     {books}
 
-    User context and preferences:
+    User request:
     {info}
 
     Instructions:
-    - Select the most relevant books from the library
-    - Use the book titles exactly as written
-    - Explain briefly why each book matches the user's interests
-    - Format your response with clear spacing and readability
-    - Ask user if they have follow up questions on any of the books
+    - Infer themes, genres, or styles the user prefers based on reading history
+    - Select the best matching books from the catalog
+    - Use book titles exactly as written
+    - Briefly explain why each recommendation fits the user's interests
+    - Format your response clearly and readably
+    - Ask if the user would like follow-up recommendations
     """
+
 
     #Turns the template into ChatPromptTemplate Object, this parses the string for placeholders and required inputs and formats it for the chatbot
     prompt = ChatPromptTemplate.from_template(template)
@@ -113,17 +128,31 @@ def chatbot():
         info = input("How can I help you?\n")
 
         # Search book database to answer based on user info provided
-        books = retriever.invoke(info) 
+        docs = retriever.invoke(info) 
 
+        #Seperate Library Catalog and User History
+        catalog = [doc for doc in docs if doc.metadata.get("source") == "catalog"]
+        history = [doc for doc in docs if doc.metadata.get("source") == "history"]
+        
         # Format the data retrieved into cleaner text
-        books_text = "\n\n".join( 
-        f"- {doc.page_content}"
-        for doc in books
+        books = "\n\n".join(
+            f"- {doc.metadata.get('title', 'Unknown Title')}: {doc.page_content}"
+        for doc in catalog
         )
+        history_text = "\n\n".join(
+            f"- {doc.page_content}"
+            for doc in history
+        ) 
+
+
         
         # Retireve an answer based on the info and given list of books
-        result = chain.invoke({"books": books_text, "info": info})
+        result = chain.invoke({"books": books, "history": history, "info": info})
 
         print("\n__________________________________________________________")
         print("\n"+result)
         print("\n__________________________________________________________")
+
+#Run
+if __name__ == "__main__":
+    homepage()
