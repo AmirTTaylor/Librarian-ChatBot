@@ -23,5 +23,6 @@ Progress:
     - Working on reading and writing from a file that stores books the user has read
     - Successfully allow user to store books theyve read and see a list of those books
     - Store user book history in datbase for chatbot use
+    - Add Navigation between pages
 
     Next I need to ensure the bot is using the csv file and user history

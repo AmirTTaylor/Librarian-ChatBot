@@ -1,48 +1,57 @@
 from langchain_ollama.llms import OllamaLLM
 from langchain_core.prompts import ChatPromptTemplate
 from vector import retriever
+import os
+import platform
 import sys
 #Functions
 def homepage():
     #Print Homepage
     print("_________________________________________________________\n"+"Welcome to your personal libary!!\n")
     
-    print("1.My Library\n"+"2.AI Librarian(Book Recommendations)")
+    print("1.My Library\n"+"2.AI Librarian(Book Recommendations)\n"+"Q. Quit")
     
     #Take user input for app navigation
     navigate = input("Enter 1 or 2 to navigate: ")
     
     #Ensure user inputs 1 or 2
-    while navigate not in ("1","2"):
+    while navigate not in ("1","2","Q"):
         navigate = input("Please make sure your input is a 1 or 2: ")
     
     match navigate:
         case "1":
+            clear()
             mylibrary()
         case "2":
+            clear()
             chatbot()
+        case "Q":
+            sys.exit(0)
 
 def mylibrary():
     #Menu
-    print("_____________________________________________\n"+"1.Finished Books\n"+"2.Add a Book\n"+"3.To-Be-Read (TBR) List")
+    print("_____________________________________________\n"+"1.Finished Books\n"+"2.Add a Book\n"+"3.To-Be-Read (TBR) List\n"+"H. Hompage")
 
     #Navigate menu
-    navigate = input("Enter 1 or 2 to navigate: ")
-    while navigate not in ("1","2","3"):
-        navigate = input("Please make sure your input is a 1, 2, or 3: ")
+    navigate = input("Enter 1, 2, 3, or H to navigate: ")
+    while navigate not in ("1","2","3","H"):
+        navigate = input("Please make sure your input is a 1, 2, 3, or H: ")
     
     match navigate:
         case "1":
+            clear()
             finishedbooks()
         case "2":
+            clear()
             addbook()
-            pass
         case "3":
             pass
+        case "H":
+            clear()
+            homepage()
 
 def finishedbooks():
-    print(""""_____________________________________________________
-          Here is a list of your finished books:\n""")
+    print("_____________________________________________________\n"+"Here is a list of your finished books:\n")
     
     #Access or create a text file to store the users previously read books
     try:
@@ -53,6 +62,14 @@ def finishedbooks():
     except FileNotFoundError:
         print("Soemthing went wrong. Error 1")   
         sys.exit()
+    
+    #Back to Library
+    back = input("Enter [B] to return to the library page:")
+    while back not in("B"):
+        back = input("To return to library please enter [B]")
+    
+    clear()
+    mylibrary()
 
 def addbook():
     print("_____________________________________________\n"+"Congrats on finishing a book!!!!\n"+"Please porvide the following info about the book.")
@@ -76,6 +93,14 @@ def addbook():
     except FileNotFoundError:
         print("Soemthing went wrong. Error 1")   
         sys.exit()
+        
+    #Back to Library
+    back = input("Enter [B] to return to the library page:")
+    while back not in("B"):
+        back = input("To return to library please enter [B]")
+    
+    clear()
+    mylibrary()
 
 def chatbot():
     model = OllamaLLM(model = "phi3:mini") # The chatbot model
@@ -111,7 +136,6 @@ def chatbot():
     - Use book titles exactly as written
     - Briefly explain why each recommendation fits the user's interests
     - Format your response clearly and readably
-    - Ask if the user would like follow-up recommendations
     """
 
 
@@ -152,7 +176,20 @@ def chatbot():
         print("\n__________________________________________________________")
         print("\n"+result)
         print("\n__________________________________________________________")
-
+        
+        #Back to Homepage
+        back = input("Another recommendation[Y]? or enter [B] for Homepage:")
+        if back in ("B"):
+            clear()
+            homepage()
+    
+        clear()
+        
+def clear():
+    if platform.system() == "Windows":
+        os.system('cls')
+    else:
+        os.system('clear')
 #Run
 if __name__ == "__main__":
     homepage()
