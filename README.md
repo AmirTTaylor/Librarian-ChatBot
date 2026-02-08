@@ -38,13 +38,13 @@ This project is still under active development.
 ---
 
 ## 🧱 Project Structure
-  ├── main.py # App entry point and terminal UI
-  ├── vector.py # Vector store creation and retriever logic
-  ├── books.csv # Book catalog
-  ├── yourbooks.txt # User reading history (created at runtime)
-  ├── chroma_langchain_db/ # Persisted Chroma vector database
-  ├── requirements.txt # Python dependencies
-  └── README.md
+  - main.py # App entry point and terminal UI
+  -  vector.py # Vector store creation and retriever logic
+  -  books.csv # Book catalog
+  -  yourbooks.txt # User reading history (created at runtime)
+  -  chroma_langchain_db/ # Persisted Chroma vector database
+  -  requirements.txt # Python dependencies
+  -  README.md
   ---
 
 ## 🖥️ Running the Project
