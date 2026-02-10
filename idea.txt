@@ -25,4 +25,7 @@ Progress:
     - Store user book history in datbase for chatbot use
     - Add Navigation between pages
 
+    02/010/26
+        - Check if user has added books to there library before  showing, if no say that and ask them to add books
+
     Next I need to ensure the bot is using the csv file and user history

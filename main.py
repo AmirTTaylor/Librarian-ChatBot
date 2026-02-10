@@ -26,6 +26,7 @@ def homepage():
             clear()
             chatbot()
         case "Q":
+            clear()
             sys.exit(0)
 
 def mylibrary():
@@ -51,16 +52,29 @@ def mylibrary():
             homepage()
 
 def finishedbooks():
-    print("_____________________________________________________\n"+"Here is a list of your finished books:\n")
     
     #Access or create a text file to store the users previously read books
     try:
         with open("yourbooks.txt","r") as yourbooks:
             content = yourbooks.read()
+            #Check if there are books in the file
+            if content == '':
+                addbookschoice = True
+                addbooks = input("There are currently 0 books in your library, Enter [1] to add books or [2] for Homepage: ")
+                while addbookschoice:
+                    if addbooks == "1":
+                        addbook()
+                    elif addbooks == "2":
+                        homepage()
+                    else:
+                        clear()
+                        addbooks = input("Please Enter [1] to add a book or [2] for Homepage: ")
+            #Print Books
+            print("_____________________________________________________\n"+"Here is a list of your finished books:\n")
             print(content)
     #Handle errors
     except FileNotFoundError:
-        print("Soemthing went wrong. Error 1")   
+        print("Something went wrong. Error 1")   
         sys.exit()
     
     #Back to Library
