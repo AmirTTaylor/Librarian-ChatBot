@@ -5,11 +5,70 @@ import os
 import platform
 import sys
 #Functions
+def start():
+    print("Welcome to Librarian Chatbot")
+    choice = input("1. Login\n"+"2. Sign Up\n"+"Q. Quit\n"+"Enter [1] or [2]: ")
+    
+    match choice:
+        case "1":
+            clear()
+            login()
+        case "2":
+            clear()
+            signup()
+        case "Q":
+            clear()
+            sys.exit(0)
+
+def login():
+    username = input("Username: ")
+    password = input("Password: ")
+    id =username + password
+    
+    try:
+        with open("profiles.txt", "r") as profiles:
+            content = profiles.read()
+            if id in content:
+                clear()
+                homepage()
+            else:
+                clear()
+                print("Username or Password is incorrect. Try again.")
+                login()
+    #Handle errors
+    except FileNotFoundError:
+        print("Something went wrong. Error 1")   
+        sys.exit()
+
+def signup():
+    username = input("Create a Username: ")
+    password = input("Create a Password: ")
+    
+    id = username + password
+    
+    try:
+        with open("profiles.txt", "r+") as profiles:
+            content = profiles.read()
+            if id in content:
+                clear()
+                print("Try again with a different Username and Password")
+                signup()
+            else:
+                profiles.write(id+"\n")
+                profiles.flush()
+                clear()
+                print("Successfully created an account, now login!")
+                login()
+    #Handle errors
+    except FileNotFoundError:
+        print("Something went wrong. Error 1")   
+        sys.exit()
+   
 def homepage():
     #Print Homepage
     print("_________________________________________________________\n"+"Welcome to your personal libary!!\n")
     
-    print("1.My Library\n"+"2.AI Librarian(Book Recommendations)\n"+"Q. Quit")
+    print("1.My Library\n"+"2.AI Librarian(Book Recommendations)\n"+"Q. Sign out")
     
     #Take user input for app navigation
     navigate = input("Enter 1 or 2 to navigate: ")
@@ -27,7 +86,7 @@ def homepage():
             chatbot()
         case "Q":
             clear()
-            sys.exit(0)
+            start()
 
 def mylibrary():
     #Menu
@@ -207,4 +266,4 @@ def clear():
 #Run
 if __name__ == "__main__":
     clear()
-    homepage()
+    start()
