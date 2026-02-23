@@ -117,7 +117,7 @@ def addbook():
     mylibrary()
 
 def chatbot():
-    model = OllamaLLM(model = "phi3:mini") # The chatbot model
+    model = OllamaLLM(model = "qwen2") # The chatbot model
     
     #This is the template of instructions for the chatbot
     template = """
@@ -167,7 +167,7 @@ def chatbot():
 
         # Search book database to answer based on user info provided
         docs = retriever.invoke(info) 
-
+        
         #Seperate Library Catalog and User History
         catalog = [doc for doc in docs if doc.metadata.get("source") == "catalog"]
         history = [doc for doc in docs if doc.metadata.get("source") == "history"]
@@ -206,4 +206,5 @@ def clear():
         os.system('clear')
 #Run
 if __name__ == "__main__":
+    clear()
     homepage()
