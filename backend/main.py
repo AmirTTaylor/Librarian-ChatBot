@@ -4,7 +4,9 @@ from vector import retriever
 import os
 import platform
 import sys
+
 #Functions
+
 def start():
     print("Welcome to Librarian Chatbot")
     choice = input("1. Login\n"+"2. Sign Up\n"+"Q. Quit\n"+"Enter [1] or [2]: ")
@@ -263,6 +265,7 @@ def clear():
         os.system('cls')
     else:
         os.system('clear')
+
 #Run
 if __name__ == "__main__":
     clear()
