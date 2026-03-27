@@ -1,0 +1,13 @@
+# Python
+__pycache__/
+*.pyc
+venv/
+
+# Vector Database
+chroma_langchain_db/
+
+# Sensitive data
+profiles.txt
+
+# Frontend
+node_modules/

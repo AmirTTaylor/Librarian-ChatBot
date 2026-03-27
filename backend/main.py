@@ -65,7 +65,7 @@ def signup():
     except FileNotFoundError:
         print("Something went wrong. Error 1")   
         sys.exit()
-   
+
 def homepage():
     #Print Homepage
     print("_________________________________________________________\n"+"Welcome to your personal libary!!\n")
@@ -92,7 +92,7 @@ def homepage():
 
 def mylibrary():
     #Menu
-    print("_____________________________________________\n"+"1.Finished Books\n"+"2.Add a Book\n"+"3.To-Be-Read (TBR) List\n"+"H. Hompage")
+    print("_____________________________________________\n"+"1.Finished Books\n"+"2.Add a Book\n"+"3.To-Be-Read List (TBR) List\n"+"H. Hompage")
 
     #Navigate menu
     navigate = input("Enter 1, 2, 3, or H to navigate: ")
@@ -107,7 +107,8 @@ def mylibrary():
             clear()
             addbook()
         case "3":
-            pass
+            clear()
+            tbr()
         case "H":
             clear()
             homepage()
@@ -147,35 +148,109 @@ def finishedbooks():
     mylibrary()
 
 def addbook():
-    print("_____________________________________________\n"+"Congrats on finishing a book!!!!\n"+"Please porvide the following info about the book.")
-    # Book info
-    title = input("Book Title: ")
-    author = input("Author :")
-    review = input("Rating 1-5: ")
-    notes = input("Notes: ")
-    info = [
-        f"Title: {title}\n",
-        f"Author: {author}\n",
-        f"Rating: {review}\n",
-        f"Notes: {notes}\n",
-        "-" * 32 + "\n"
-    ]
+    choice = input("_____________________________________________\n"+"Add to:\n"+"1.Finished Books\n"+"2.To-Be-Read List\n"+"Enter [1],[2],[H](for Hompage) to navigate:")
+    while choice not in ("1","2","H"):
+        choice = input("Please make sure your input is a 1, 2,or H: ")
+    
+    match choice:
+        case "1":#Add to Finished Books
+            clear()
+            print("_____________________________________________\n"+"Congrats on finishing a book!!!!\n"+"Please provide the following info about the book.")
+            # Book info
+            title = input("Book Title: ")
+            author = input("Author :")
+            review = input("Rating 1-5: ")
+            notes = input("Notes: ")
+            info = [
+                f"Title: {title}\n",
+                f"Author: {author}\n",
+                f"Rating: {review}\n",
+                f"Notes: {notes}\n",
+                "-" * 32 + "\n"
+            ]
+            #Access or create a text file to store the users previously read books
+            try:
+                with open("yourbooks.txt","a+") as yourbooks:
+                    yourbooks.writelines(info)
+            #Handle errors
+            except FileNotFoundError:
+                print("Something went wrong. Error 1")   
+                sys.exit()
+
+            #Back to Library
+            back = input("Enter [B] to return to the library page:")
+            while back not in("B"):
+                back = input("To return to library please enter [B]")
+
+            clear()
+            mylibrary()
+        case "2":#Add to TBR
+            clear()
+            print("_____________________________________________\n"+"Awesome!!!!\n"+"Please provide the following info about the book you want to add.")
+            # Book info
+            title = input("Book Title: ")
+            author = input("Author :")
+            theme = input("Theme: ")
+            notes = input("Notes: ")
+            info = [
+                f"Title: {title}\n",
+                f"Author: {author}\n",
+                f"Theme: {theme}\n",
+                f"Notes: {notes}\n",
+                "-" * 32 + "\n"
+            ]
+            #Access or create a text file to store the users previously read books
+            try:
+                with open("tbr.txt","a+") as tbr:
+                    tbr.writelines(info)
+            #Handle errors
+            except FileNotFoundError:
+                print("Something went wrong. Error 1")   
+                sys.exit()
+
+            #Back to Library
+            back = input("Enter [B] to return to the library page:")
+            while back not in("B"):
+                back = input("To return to library please enter [B]")
+
+            clear()
+            mylibrary()
+        case "H":#Home
+            clear()
+            homepage()
+
+def tbr():
     #Access or create a text file to store the users previously read books
     try:
-        with open("yourbooks.txt","a+") as yourbooks:
-            yourbooks.writelines(info)
+        with open("tbr.txt","r") as tbr:
+            content = tbr.read()
+            #Check if there are books in the file
+            if content == '':
+                addbookschoice = True
+                addbooks = input("There are currently 0 books in your TBR, Enter [1] to add books or [2] for Homepage: ")
+                while addbookschoice:
+                    if addbooks == "1":
+                        addbook()
+                    elif addbooks == "2":
+                        homepage()
+                    else:
+                        clear()
+                        addbooks = input("Please Enter [1] to add a book or [2] for Homepage: ")
+            #Print Books
+            print("_____________________________________________________\n"+"Here is your TBR:\n")
+            print(content)
     #Handle errors
     except FileNotFoundError:
-        print("Soemthing went wrong. Error 1")   
+        print("Something went wrong. Error 1")   
         sys.exit()
-        
+    
     #Back to Library
     back = input("Enter [B] to return to the library page:")
     while back not in("B"):
         back = input("To return to library please enter [B]")
     
     clear()
-    mylibrary()
+    mylibrary() 
 
 def chatbot():
     model = OllamaLLM(model = "qwen2") # The chatbot model
