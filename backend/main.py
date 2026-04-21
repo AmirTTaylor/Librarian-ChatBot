@@ -92,7 +92,7 @@ def homepage():
 
 def mylibrary():
     #Menu
-    print("_____________________________________________\n"+"1.Finished Books\n"+"2.Add a Book\n"+"3.To-Be-Read List (TBR) List\n"+"H. Hompage")
+    print("_____________________________________________\n"+"1.Finished Books\n"+"2.Add a Book\n"+"3.To-Be-Read List (TBR)\n"+"4.Currently Reading"+"H. Hompage")
 
     #Navigate menu
     navigate = input("Enter 1, 2, 3, or H to navigate: ")
