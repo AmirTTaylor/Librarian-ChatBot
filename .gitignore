@@ -3,11 +3,17 @@ __pycache__/
 *.pyc
 venv/
 
-# Vector Database
+# Vector Database (auto-generated on first run)
 chroma_langchain_db/
 
-# Sensitive data
+# Sensitive / user data (auto-generated at runtime)
 profiles.txt
+*_books.txt
+*_tbr.txt
+*_reading.txt
+
+# Personal notes
+idea.txt
 
 # Frontend
 node_modules/

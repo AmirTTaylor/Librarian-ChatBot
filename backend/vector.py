@@ -1,41 +1,33 @@
 #Database hosted locally for quick search use for our chatbot
 from langchain_ollama import OllamaEmbeddings
-from langchain_community.document_loaders import TextLoader
-from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_chroma import Chroma
 from langchain_core.documents import Document
 import os
 import pandas as pd
 
+# Base directory — all file paths are built relative to this
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 #Bring in the file containing book data
-df = pd.read_csv("books.csv")
-
-#Load the yourbooks file
-loader = TextLoader("yourbooks.txt", encoding = "utf-8")
-txtDocuments = loader.load()
-
-#Splitting text file into chunks (Hard to embed large chunks)
-textSplitter = RecursiveCharacterTextSplitter(chunk_size = 500, chunk_overlap = 50)
-txtChunks = textSplitter.split_documents(txtDocuments)
+df = pd.read_csv(os.path.join(BASE_DIR, "books.csv"))
 
 #Embedding Model
-embeddings = OllamaEmbeddings(model = "nomic-embed-text") # Define the embeddings model
+embeddings = OllamaEmbeddings(model = "nomic-embed-text")
 
-#Chroma Database Location
-db_location = "./chroma_langchain_db"
-add_documents = not os.path.exists(db_location) # Check is database location exist
+#Chroma Database Location — stores only the book catalog
+db_location = os.path.join(BASE_DIR, "chroma_langchain_db")
+add_documents = not os.path.exists(db_location)
 
-#Intitalize an empty vector store
-vector_store = Chroma( #Intialize the vectore store
+#Initialize the vector store
+vector_store = Chroma(
     collection_name = "Books",
     persist_directory = db_location,
     embedding_function = embeddings,
 )
 
-if add_documents: #if it doesn't prepare data by converting it into documents
+if add_documents:
+    # Load catalog from CSV into the vector store (one-time setup)
     documents = []
-
-    #Turning CSV contents into docs
     for i, row in df.iterrows():
         document = Document(
             page_content=f"{row['Description']} Themes: {row['Themes']}",
@@ -49,16 +41,10 @@ if add_documents: #if it doesn't prepare data by converting it into documents
         )
         documents.append(document)
 
-    #Turn txt contents into docs
-    for chunk in txtChunks:
-        chunk.metadata["source"] = "history"
-        documents.append(chunk)
-        
-    # Add data to the vectore store
-    vector_store.add_documents(documents = documents)
-    
-# Connect vector store to chatbot
+    vector_store.add_documents(documents=documents)
+
+# Catalog retriever — searches only the book catalog
 retriever = vector_store.as_retriever(
-    #Number of books recommendations outputted
-    search_kwargs = { "k": 3} 
+    # Fetch enough results so we always have good catalog coverage
+    search_kwargs={"k": 8}
 )
