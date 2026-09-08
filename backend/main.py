@@ -1,10 +1,15 @@
 from langchain_ollama.llms import OllamaLLM
 from langchain_core.prompts import ChatPromptTemplate
 from vector import retriever
+from dotenv import load_dotenv
 import os
 import platform
 import sys
 import hashlib
+
+#Read .env file to populate os.environ
+load_dotenv()
+MODEL_NAME = os.environ.get('BOOKWORM_MODEL','qwen2')
 
 # Base directory — all file paths are built relative to this so the app
 # works regardless of what directory you run it from
@@ -361,7 +366,7 @@ def currently_reading():
     mylibrary()
 
 def chatbot():
-    model = OllamaLLM(model = "qwen2") # The chatbot model
+    model = OllamaLLM(model = MODEL_NAME) # The chatbot model
     
     #This is the template of instructions for the chatbot
     template = """
