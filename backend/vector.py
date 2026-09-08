@@ -2,22 +2,15 @@
 from langchain_ollama import OllamaEmbeddings
 from langchain_chroma import Chroma
 from langchain_core.documents import Document
-from dotenv import load_dotenv
+from config import BASE_DIR, BOOKWORM_EMBED_MODEL
 import os
 import pandas as pd
-
-#Read .env to populate os.environ
-load_dotenv()
-EMBED_MODEL = os.environ.get('BOOKWORM_EMBED_MODEL','nomic-embed-text')
-
-# Base directory — all file paths are built relative to this
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 #Bring in the file containing book data
 df = pd.read_csv(os.path.join(BASE_DIR, "books.csv"))
 
 #Embedding Model
-embeddings = OllamaEmbeddings(model = EMBED_MODEL)
+embeddings = OllamaEmbeddings(model = BOOKWORM_EMBED_MODEL)
 
 #Chroma Database Location — stores only the book catalog
 db_location = os.path.join(BASE_DIR, "chroma_langchain_db")
